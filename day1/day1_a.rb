@@ -5,7 +5,7 @@ class Day1A
 
     File.foreach(File.join(__dir__, "input.dat")).each_entry do |line|
       current = line.strip
-      running_total += current.to_i
+      running_total += current.to_i # "".to_i == 0
       if current == "" || !line.include?("\n")
         max = running_total if running_total > max
         running_total = 0
