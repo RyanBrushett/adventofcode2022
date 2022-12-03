@@ -11,12 +11,12 @@ class SecondPart
     File.foreach(File.join(__dir__, "input.dat")).each_entry do |line|
       lines << line.chomp
       count += 1
-      if count == 3
-        common_item = (lines[0].chars & lines[1].chars & lines[2].chars).first # exactly one as per instructions
-        sum += priorities[common_item]
-        count = 0
-        lines = []
-      end
+      next unless count == 3
+
+      common_item = (lines[0].chars & lines[1].chars & lines[2].chars).first # exactly one as per instructions
+      sum += priorities[common_item]
+      count = 0
+      lines = []
     end
 
     sum
