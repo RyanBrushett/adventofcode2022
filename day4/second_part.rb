@@ -1,4 +1,4 @@
-class FirstPart
+class SecondPart
   def run
     count = 0
 
@@ -24,4 +24,4 @@ class FirstPart
   end
 end
 
-p FirstPart.new.run
+p SecondPart.new.run
