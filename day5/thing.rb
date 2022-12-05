@@ -1,7 +1,7 @@
-class ThingOne
+class Thing
   MOVES_REGEX = %r{move (?<move_count>\d+) from (?<start>\d+) to (?<end>\d+)}
 
-  def run
+  def run(problem_part:)
     #             [G] [W]         [Q]
     # [Z]         [Q] [M]     [J] [F]
     # [V]         [V] [S] [F] [N] [R]
@@ -27,8 +27,17 @@ class ThingOne
       next unless matches = line.match(MOVES_REGEX)
       landing_spot = matches[:end].to_i - 1 # zero-based arrays
       starting_spot = matches[:start].to_i - 1 # zero-based arrays
-      matches[:move_count].to_i.times do
-        stacks[landing_spot].push(stacks[starting_spot].pop)
+
+      case problem_part
+      when "one" # Can only move one crate at a time
+        matches[:move_count].to_i.times do
+          stacks[landing_spot].push(stacks[starting_spot].pop)
+        end
+      when "two" # Can move n crates at a time
+        move_count = matches[:move_count].to_i
+        stacks[landing_spot].push(stacks[starting_spot].pop(move_count)).flatten!
+      else
+        "wat"
       end
     end
 
@@ -36,4 +45,5 @@ class ThingOne
   end
 end
 
-p ThingOne.new.run
+puts "Part one: #{Thing.new.run(problem_part: "one")}"
+puts "Part two: #{Thing.new.run(problem_part: "two")}"
