@@ -3,6 +3,9 @@ require 'pathname'
 
 class Thing
   attr_reader :directories
+  MINIMUM_FREE_SPACE = 30000000
+  TOTAL_DISK_SPACE = 70000000
+
   def initialize
     @pwd = Pathname.new("/")
     @directories = [Directory.new("/")]
@@ -14,7 +17,18 @@ class Thing
   end
 
   def size
-    @directories.sum(&:size)
+    @used_space ||= @directories.first.size
+  end
+
+  def unused_space
+    TOTAL_DISK_SPACE - size
+  end
+
+  def need_to_free
+    MINIMUM_FREE_SPACE - unused_space
+  end
+
+  def smallest_delete_dir
   end
 
   def pwd=(x)
@@ -32,6 +46,21 @@ class Thing
     end
 
     sum
+  end
+
+  def dir_to_free_space
+    result_dir = nil
+    @directories.each do |dir|
+      if dir.size > need_to_free
+        if result_dir.nil?
+          result_dir = dir
+        elsif dir.size < result_dir.size
+          result_dir = dir
+        end
+      end
+    end
+
+    result_dir
   end
 
   def run(data)
@@ -92,7 +121,7 @@ class Thing
     end
 
     def size
-      ls.sum(&:size)
+      @size ||= ls.sum(&:size)
     end
 
     def ls_names
@@ -229,6 +258,22 @@ class Thing
       thing.run(INPUT_DATA)
       assert_equal 95437, thing.sum_of_small_dirs
     end
+
+    def test_calc_need_to_free
+      thing = Thing.new
+      thing.run(INPUT_DATA)
+      assert_equal 48381165, thing.directories.first.size
+      assert_equal 21618835, thing.unused_space
+      assert_equal 8381165, thing.need_to_free
+    end
+
+    def test_dir_to_free_space
+      thing = Thing.new
+      thing.run(INPUT_DATA)
+      dir = thing.dir_to_free_space
+      assert_equal "d", dir.name
+      assert_equal 24933642, dir.size
+    end
   end
 end
 
@@ -240,5 +285,9 @@ end
 puts ""
 puts "Part 1 output: "
 p thing.sum_of_small_dirs
+puts ""
+
+puts "Part 2 output: "
+p thing.dir_to_free_space.size
 puts ""
 puts ""
