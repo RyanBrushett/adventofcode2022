@@ -8,7 +8,7 @@ class Thing
 
   def initialize
     @pwd = Pathname.new("/")
-    @directories = [Directory.new("/")]
+    @directories = [Directory.new("/")] # There's 100% a better way to do this
   end
 
   # a bit smarter than an attr_reader
@@ -26,9 +26,6 @@ class Thing
 
   def need_to_free
     MINIMUM_FREE_SPACE - unused_space
-  end
-
-  def smallest_delete_dir
   end
 
   def pwd=(x)
@@ -101,7 +98,7 @@ class Thing
     when 3
       ChangeDirCommand.new(command_parts[2], self).call # TODO get rid of this
     when 2
-      ListCommand.new.call
+      ListCommand.new.call # Get rid of this
     else
       raise "wat"
     end
@@ -138,7 +135,7 @@ class Thing
     end
   end
 
-  class ChangeDirCommand
+  class ChangeDirCommand # TODO get rid of this
     attr_reader :arg
     def initialize(arg, fs)
       @arg = arg
@@ -157,7 +154,7 @@ class Thing
   end
 
   class ListCommand
-    def call; end # Do I even need this?
+    def call; end # Do I even need this? No.
   end
 
   class ThingTest < Minitest::Test
