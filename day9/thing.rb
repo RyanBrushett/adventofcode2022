@@ -70,7 +70,7 @@ class Thing
       next if head.touching?(tail)
       big_jump = big_jump_calc(head, tail)
       big_jump.nil? ? tail.move(direction) : tail.move(big_jump)
-      @tail_visited_locations |= [tail.location]
+      @tail_visited_locations |= [tail.location] # This is really slow, refactor to a set
     end
   end
 
